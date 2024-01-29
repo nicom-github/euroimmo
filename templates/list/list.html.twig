@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}€URO-immo{% endblock %}
+
+{% block body %}
+    <h2>List</h2>
+
+    {% for realEstates in realEstates %}
+        <h4>{{ Real Estate }}</h4>
+    {% endfor %}
+{% endblock %}

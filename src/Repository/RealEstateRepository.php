@@ -21,6 +21,8 @@ class RealEstateRepository extends ServiceEntityRepository
         parent::__construct($registry, RealEstate::class);
     }
 
+
+
 //    /**
 //     * @return RealEstate[] Returns an array of RealEstate objects
 //     */
