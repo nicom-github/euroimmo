@@ -3,6 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -32,6 +35,44 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
+
+    #[ORM\Column(length: 30)]
+    private ?string $name = null;
+
+    #[ORM\Column(length: 30)]
+    private ?string $forename = null;
+
+    #[ORM\Column(length: 15, nullable: true)]
+    private ?string $mobilephonenumber = null;
+
+    #[ORM\Column(length: 15, nullable: true)]
+    private ?string $phonenumber = null;
+
+    #[ORM\Column]
+    private ?bool $active = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $dtcreate = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $dtconnect = null;
+
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    private ?Bank $bank = null;
+
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    private ?Address $address = null;
+
+    #[ORM\ManyToOne(inversedBy: 'user')]
+    private ?Img $img = null;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: RealEstate::class)]
+    private Collection $realEstate;
+
+    public function __construct()
+    {
+        $this->realEstate = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -111,6 +152,156 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): static
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getForename(): ?string
+    {
+        return $this->forename;
+    }
+
+    public function setForename(string $forename): static
+    {
+        $this->forename = $forename;
+
+        return $this;
+    }
+
+    public function getMobilephonenumber(): ?string
+    {
+        return $this->mobilephonenumber;
+    }
+
+    public function setMobilephonenumber(?string $mobilephonenumber): static
+    {
+        $this->mobilephonenumber = $mobilephonenumber;
+
+        return $this;
+    }
+
+    public function getPhonenumber(): ?string
+    {
+        return $this->phonenumber;
+    }
+
+    public function setPhonenumber(?string $phonenumber): static
+    {
+        $this->phonenumber = $phonenumber;
+
+        return $this;
+    }
+
+    public function isActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): static
+    {
+        $this->active = $active;
+
+        return $this;
+    }
+
+    public function getDtcreate(): ?\DateTimeInterface
+    {
+        return $this->dtcreate;
+    }
+
+    public function setDtcreate(\DateTimeInterface $dtcreate): static
+    {
+        $this->dtcreate = $dtcreate;
+
+        return $this;
+    }
+
+    public function getDtconnect(): ?\DateTimeInterface
+    {
+        return $this->dtconnect;
+    }
+
+    public function setDtconnect(\DateTimeInterface $dtconnect): static
+    {
+        $this->dtconnect = $dtconnect;
+
+        return $this;
+    }
+
+    public function getBank(): ?Bank
+    {
+        return $this->bank;
+    }
+
+    public function setBank(?Bank $bank): static
+    {
+        $this->bank = $bank;
+
+        return $this;
+    }
+
+    public function getAddress(): ?Address
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?Address $address): static
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    public function getImg(): ?Img
+    {
+        return $this->img;
+    }
+
+    public function setImg(?Img $img): static
+    {
+        $this->img = $img;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, RealEstate>
+     */
+    public function getRealEstate(): Collection
+    {
+        return $this->realEstate;
+    }
+
+    public function addRealEstate(RealEstate $realEstate): static
+    {
+        if (!$this->realEstate->contains($realEstate)) {
+            $this->realEstate->add($realEstate);
+            $realEstate->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRealEstate(RealEstate $realEstate): static
+    {
+        if ($this->realEstate->removeElement($realEstate)) {
+            // set the owning side to null (unless already changed)
+            if ($realEstate->getUser() === $this) {
+                $realEstate->setUser(null);
+            }
+        }
 
         return $this;
     }
